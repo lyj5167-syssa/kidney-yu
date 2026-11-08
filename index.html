@@ -22,53 +22,55 @@
             overflow: hidden;
             background-color: #ffffff;
         }
-        .app-container {
+                .app-container {
             position: relative;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             height: -webkit-fill-available;
             height: 100dvh; /* 아이패드 Safari 주소창·탭바를 뺀 실제 보이는 높이 */
             background: #ffffff;
             display: flex;
             flex-direction: column;
+            gap: 8px;
+            padding: 10px 14px 12px;
         }
 
         /* 1. 우측 상단 3x2 물질 버튼 패널 */
-        .top-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+                .top-controls {
+            flex: 0 0 auto;
+            align-self: center;
+            width: 100%;
+            max-width: 780px;
             display: grid;
-            grid-template-columns: repeat(3, clamp(160px, 17vw, 220px));
-            grid-template-rows: repeat(2, clamp(44px, 5vh, 56px));
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: clamp(38px, 5vh, 54px);
             gap: 8px;
             background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(8px);
             border: 1px solid #cbd5e1;
             border-radius: 16px;
             padding: 10px;
-            z-index: 20;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         /* 2. 좌측 하단 제어 버튼 패널 */
-        .bottom-left-controls {
-            position: absolute;
-            bottom: 160px;
-            left: 20px;
+                /* 2. 재생·퀴즈 버튼 줄 (화면 크기와 상관없이 항상 보임) */
+        .action-bar {
+            flex: 0 0 auto;
             display: flex;
-            gap: 10px;
-            z-index: 30;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
         }
-
-        /* 3. 우측 하단 퀴즈 모드 제어 버튼 패널 */
-        .bottom-right-controls {
-            position: absolute;
-            bottom: 160px;
-            right: 20px;
+        .action-left {
             display: flex;
-            gap: 10px;
-            z-index: 30;
+            gap: 8px;
+        }
+        .rotate-hint {
+            display: none;
+            flex: 0 0 auto;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
         }
 
         /* 물질 토글 버튼 스타일 */
@@ -77,10 +79,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 12px;
+            min-width: 0;
+            line-height: 1.1;
+            text-align: left;
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 10px;
-            font-size: clamp(16px, 1.5vw, 20px);
+            font-size: clamp(14px, 1.7vw, 20px);
             color: #64748b;
             font-weight: bold;
             cursor: pointer;
@@ -122,7 +127,7 @@
         /* 일반 버튼 스타일 */
         .btn {
             padding: 0 16px;
-            height: clamp(44px, 5vh, 56px);
+            height: clamp(38px, 5vh, 54px);
             border: none;
             border-radius: 10px;
             background: #e2e8f0;
@@ -130,7 +135,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: clamp(16px, 1.5vw, 20px);
+            font-size: clamp(14px, 1.6vw, 20px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -155,17 +160,18 @@
         .btn.all-view {
             background: #0f172a;
             color: white;
-            font-size: clamp(14px, 1.3vw, 18px);
+            font-size: clamp(12px, 1.4vw, 18px);
         }
         .btn.all-view:hover {
             background: #1e293b;
         }
 
         /* 뷰 영역 및 캔버스 풀스크린 */
-        .view-area {
+                .view-area {
             position: relative;
+            flex: 1 1 auto;
+            min-height: 0; /* 남는 공간만 차지 → 위아래 패널과 겹치지 않음 */
             width: 100%;
-            height: 100%;
             overflow: hidden;
         }
         .canvas-container {
@@ -184,55 +190,52 @@
         }
 
         /* 하단 가득 채우는 개념 설명 패널 */
-        .info-panel {
-            position: absolute;
-            bottom: 15px;
-            left: 20px;
-            right: 20px;
-            height: clamp(110px, 14vh, 135px);
+                .info-panel {
+            flex: 0 0 auto;
+            height: clamp(84px, 17dvh, 150px);
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
             border: 1px solid #cbd5e1;
             border-radius: 16px;
-            padding: 14px 28px;
-            z-index: 20;
+            padding: 10px 24px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            overflow-y: auto;
         }
-        .info-panel strong {
+        .info-panel > strong:first-child { margin-top: auto; }
+        .info-panel > span:last-child { margin-bottom: auto; }
+                .info-panel strong {
             color: #1e293b;
-            font-size: clamp(21px, 2vw, 28px);
+            font-size: clamp(16px, 2vw, 26px);
             margin-bottom: 4px;
             line-height: 1.25;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .info-panel span {
+                .info-panel span {
             color: #334155;
-            font-size: clamp(18px, 1.7vw, 23px);
+            font-size: clamp(13px, 1.6vw, 22px);
             line-height: 1.35;
         }
 
         /* 🧠 플로팅 퀴즈 팝업 모달창 스타일 */
         .quiz-modal {
             position: absolute;
-            top: 45%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: clamp(340px, 50vw, 550px);
+            width: min(94vw, 560px);
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             border: 2px solid #8b5cf6;
             border-radius: 20px;
-            padding: 24px;
+            padding: clamp(12px, 3vw, 24px);
             z-index: 100;
             box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
             display: none;
             flex-direction: column;
-            gap: 16px;
+            gap: clamp(8px, 2vw, 16px);
         }
         .quiz-modal.active {
             display: flex;
@@ -246,7 +249,7 @@
         }
         .quiz-header h3 {
             color: #7c3aed;
-            font-size: 24px;
+            font-size: clamp(17px, 2.6vw, 24px);
         }
         .quiz-close-btn {
             background: none;
@@ -261,7 +264,7 @@
             gap: 12px;
         }
         .quiz-question {
-            font-size: 20px;
+            font-size: clamp(15px, 2.4vw, 20px);
             color: #1e293b;
             font-weight: bold;
             line-height: 1.4;
@@ -298,7 +301,7 @@
             background: #7c3aed;
         }
         .quiz-feedback {
-            font-size: 19px;
+            font-size: clamp(15px, 2.2vw, 19px);
             font-weight: bold;
             min-height: 30px;
             display: flex;
@@ -325,7 +328,7 @@
         .quiz-nav-btn:hover {
             background: #cbd5e1;
         }
-        .quiz-modal { max-height: 90vh; overflow-y: auto; }
+        .quiz-modal { max-height: 92vh; max-height: 92dvh; overflow-y: auto; }
         .quiz-input-row { justify-content: flex-end; }
         .quiz-submit-btn { height: 46px; }
         .quiz-options {
@@ -341,7 +344,8 @@
             border: 2px solid #cbd5e1;
             border-radius: 10px;
             background: #f8fafc;
-            font-size: 19px;
+            font-size: clamp(14px, 2.2vw, 19px);
+            min-height: 44px;
             color: #1e293b;
             cursor: pointer;
             user-select: none;
@@ -364,12 +368,126 @@
             color: #64748b;
             font-weight: bold;
         }
+        /* 문항별 풀이 상태 표시 (번호 → ⭕/❌) */
+        .quiz-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .quiz-dot {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+        }
+        .quiz-dot.current { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25); }
+        .quiz-dot.correct { background: #dcfce7; border-color: #16a34a; }
+        .quiz-dot.wrong { background: #fee2e2; border-color: #dc2626; }
+
+        /* 4문제를 모두 풀면 나타나는 결과 */
+        .quiz-score {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: clamp(15px, 2.4vw, 20px);
+            font-weight: bold;
+            color: #5b21b6;
+        }
+        .quiz-score.show { display: flex; }
+        .quiz-retry-btn {
+            flex-shrink: 0;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: clamp(14px, 2vw, 17px);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .quiz-retry-btn:hover { background: #7c3aed; }
+
+        /* ===== 작은 화면 보정 ===== */
+        /* 세로로 든 폰 */
+        @media (max-width: 640px) {
+            .app-container { padding: 6px 8px 8px; gap: 6px; }
+            .top-controls {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 38px;
+                gap: 5px;
+                padding: 6px;
+                border-radius: 12px;
+            }
+            .mat-btn { padding: 0 8px; }
+            .mat-btn .btn-left { gap: 6px; }
+            .mat-btn canvas.btn-icon { width: 20px; height: 20px; }
+            .btn { padding: 0 12px; height: 40px; }
+            .info-panel { padding: 8px 14px; height: clamp(96px, 20dvh, 150px); }
+            .quiz-dots { gap: 6px; }
+            .quiz-dot { width: 34px; height: 34px; font-size: 14px; }
+            .quiz-nav-btn { padding: 8px 12px; }
+        }
+        @media (max-width: 640px) and (orientation: portrait) {
+            .rotate-hint { display: block; }
+        }
+        /* 가로로 눕힌 폰처럼 세로 공간이 좁은 화면 */
+        @media (max-height: 500px) {
+            .app-container { padding: 4px 8px 6px; gap: 4px; }
+            .top-controls {
+                max-width: none;
+                grid-template-columns: repeat(6, 1fr);
+                grid-auto-rows: 34px;
+                gap: 4px;
+                padding: 4px;
+                border-radius: 10px;
+            }
+            .mat-btn { padding: 0 6px; font-size: 11px; border-radius: 8px; }
+            .mat-btn .btn-left { gap: 4px; }
+            .mat-btn .status-dot { display: none; }
+            .mat-btn canvas.btn-icon { width: 16px; height: 16px; }
+            .btn { height: 32px; font-size: 13px; padding: 0 12px; }
+            .btn.all-view { font-size: 11px; padding: 0 4px; }
+            .info-panel { height: 64px; padding: 6px 14px; border-radius: 10px; }
+            .info-panel strong { font-size: 14px; margin-bottom: 2px; }
+            .info-panel span { font-size: 12px; line-height: 1.3; }
+            .quiz-modal { padding: 10px 14px; gap: 6px; }
+            .quiz-header { padding-bottom: 6px; }
+            .quiz-header h3 { font-size: 16px; }
+            .quiz-question { font-size: 14px; line-height: 1.3; }
+            .quiz-body { gap: 6px; }
+            .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+            .quiz-option { min-height: 36px; padding: 4px 10px; font-size: 13px; gap: 8px; }
+            .quiz-option input { width: 18px; height: 18px; }
+            .quiz-submit-btn { height: 36px; font-size: 15px; padding: 0 16px; }
+            .quiz-feedback { min-height: 22px; font-size: 14px; }
+            .quiz-footer { padding-top: 6px; }
+            .quiz-nav-btn { padding: 6px 12px; font-size: 14px; }
+            .quiz-dot { width: 28px; height: 28px; font-size: 12px; gap: 6px; }
+            .quiz-dots { gap: 6px; }
+            .quiz-body { display: grid; grid-template-columns: 1fr auto; align-items: center; }
+            .quiz-question, .quiz-options, .quiz-score { grid-column: 1 / -1; }
+            .quiz-feedback { grid-column: 1; grid-row: 3; }
+            .quiz-input-row { grid-column: 2; grid-row: 3; }
+            .quiz-score { padding: 6px 10px; font-size: 14px; }
+            .quiz-retry-btn { padding: 5px 10px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- 1. 우측 상단 3x2 물질 버튼 패널 -->
+    <!-- 1. 물질 버튼 패널 -->
     <div class="top-controls">
         <button class="mat-btn" data-target="chkRbc">
             <div class="btn-left">
@@ -409,15 +527,30 @@
         <button class="btn all-view" id="btnAllView">모든 물질 보기 (ON/OFF)</button>
     </div>
 
-    <!-- 2. 좌측 하단 제어 버튼 패널 (명칭 버튼 삭제 반영) -->
-    <div class="bottom-left-controls">
-        <button class="btn primary" id="btnPlayPause">일시정지</button>
-        <button class="btn" id="btnReset">처음으로</button>
+    <div class="rotate-hint">📱 화면을 가로로 돌리면 더 크게 볼 수 있어요</div>
+
+    <!-- 2. 애니메이션 영역 (위아래 패널을 뺀 남은 공간) -->
+    <div class="view-area">
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="bgCanvas"></canvas>
+            <canvas id="particleCanvas"></canvas>
+            <canvas id="overlayCanvas"></canvas>
+        </div>
     </div>
 
-    <!-- 3. 우측 하단 퀴즈 모드 제어 버튼 패널 -->
-    <div class="bottom-right-controls">
+    <!-- 3. 재생·퀴즈 버튼 줄 -->
+    <div class="action-bar">
+        <div class="action-left">
+            <button class="btn primary" id="btnPlayPause">일시정지</button>
+            <button class="btn" id="btnReset">처음으로</button>
+        </div>
         <button class="btn quiz-btn" id="btnQuizModalOpen">🧠 콩팥 퀴즈 풀기</button>
+    </div>
+
+    <!-- 4. 개념 설명 패널 -->
+    <div class="info-panel" id="infoPanel">
+        <strong id="infoTitle">📍 [ 콩팥의 구조와 물질 이동 시뮬레이션 ]</strong>
+        <span id="infoDesc">화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 뜬 상태로 유지됩니다.</span>
     </div>
 
     <!-- 🧠 플로팅 퀴즈 팝업 창 -->
@@ -433,26 +566,15 @@
                 <button class="quiz-submit-btn" id="quizSubmitBtn">답 확인</button>
             </div>
             <div class="quiz-feedback" id="quizFeedback"></div>
+            <div class="quiz-score" id="quizScore">
+                <span id="quizScoreText"></span>
+                <button class="quiz-retry-btn" id="quizRetryBtn">다시 풀기</button>
+            </div>
         </div>
         <div class="quiz-footer">
             <button class="quiz-nav-btn" id="quizPrevBtn">◀ 이전</button>
-            <span class="quiz-progress" id="quizProgressText">1 / 4</span>
+            <div class="quiz-dots" id="quizDots"></div>
             <button class="quiz-nav-btn" id="quizNextBtn">다음 ▶</button>
-        </div>
-    </div>
-
-    <!-- 애니메이션 반응형 메인 뷰 -->
-    <div class="view-area">
-        <div class="canvas-container" id="canvasContainer">
-            <canvas id="bgCanvas"></canvas>
-            <canvas id="particleCanvas"></canvas>
-            <canvas id="overlayCanvas"></canvas>
-        </div>
-        
-        <!-- 하단 전체 가득 채우는 개념 설명 패널 -->
-        <div class="info-panel" id="infoPanel">
-            <strong id="infoTitle">📍 [ 콩팥의 구조와 물질 이동 시뮬레이션 ]</strong>
-            <span id="infoDesc">화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 뜬 상태로 유지됩니다.</span>
         </div>
     </div>
 </div>
@@ -475,6 +597,11 @@ const infoDesc = document.getElementById('infoDesc');
 let scaleRatio = 1;
 let offsetX = 0;
 let offsetY = 0;
+let dpr = 1;          // 화면 선명도(레티나) 배율
+let cssScale = 1;     // 기준 좌표 1이 화면에서 몇 px인지
+let pm = 1;           // 작은 화면에서 입자를 키우는 배율
+let lastSizeKey = '';
+const hitRects = {};  // 마지막으로 그린 라벨 상자 (터치 판정용)
 
 // 공통 도형 그리기 함수
 function drawShape(cCtx, type, cx, cy, radius, color) {
@@ -566,20 +693,29 @@ function initButtonIcons() {
 
 // 화면 크기 리사이징 계산 함수
 function resizeCanvases() {
-    const windowWidth = canvasContainer.clientWidth;
-    const windowHeight = canvasContainer.clientHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const cssW = canvasContainer.clientWidth;
+    const cssH = canvasContainer.clientHeight;
+    if (!cssW || !cssH) return;
 
+    const key = cssW + 'x' + cssH + '@' + dpr;
+    if (key === lastSizeKey) return;
+    lastSizeKey = key;
+
+    const pxW = Math.round(cssW * dpr);
+    const pxH = Math.round(cssH * dpr);
     [bgCanvas, canvas, overlayCanvas].forEach(c => {
-        c.width = windowWidth;
-        c.height = windowHeight;
+        c.width = pxW;
+        c.height = pxH;
     });
 
-    const scaleX = windowWidth / BASE_WIDTH;
-    const scaleY = windowHeight / BASE_HEIGHT;
-    scaleRatio = Math.min(scaleX, scaleY);
+    cssScale = Math.min(cssW / BASE_WIDTH, cssH / BASE_HEIGHT);
+    scaleRatio = cssScale * dpr;
+    offsetX = (pxW - BASE_WIDTH * scaleRatio) / 2;
+    offsetY = (pxH - BASE_HEIGHT * scaleRatio) / 2;
 
-    offsetX = (windowWidth - BASE_WIDTH * scaleRatio) / 2;
-    offsetY = (windowHeight - BASE_HEIGHT * scaleRatio) / 2;
+    // 화면이 작아 그림이 줄어들면 입자를 조금 키워서 잘 보이게 (물질 사이의 크기 비율은 그대로)
+    pm = Math.min(1.8, Math.max(1, 0.9 / cssScale));
 
     drawBackground();
 }
@@ -588,7 +724,7 @@ function resizeCanvases() {
 const bgImage = new Image();
 bgImage.src = 'background_2.png';
 bgImage.onload = () => {
-    resizeCanvases();
+    drawBackground();
 };
 
 function drawBackground() {
@@ -603,6 +739,10 @@ function drawBackground() {
 }
 
 window.addEventListener('resize', resizeCanvases);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvases, 200));
+if (window.ResizeObserver) {
+    new ResizeObserver(resizeCanvases).observe(canvasContainer); // 주소창·패널 높이가 바뀌어도 자동 반영
+}
 
 let isRunning = true;
 let particles = [];
@@ -649,18 +789,31 @@ let selectedRegion = null; // 선택된 개념을 고정 기억하기 위한 변
 // 클릭/터치 이벤트 (태블릿 손가락 탭 대응)
 canvasContainer.addEventListener('click', (e) => {
     const rect = canvasContainer.getBoundingClientRect();
-    const mouseX = (e.clientX - rect.left - offsetX) / scaleRatio;
-    const mouseY = (e.clientY - rect.top - offsetY) / scaleRatio;
+    const mouseX = ((e.clientX - rect.left) * dpr - offsetX) / scaleRatio;
+    const mouseY = ((e.clientY - rect.top) * dpr - offsetY) / scaleRatio;
+    const minTouch = 40 / cssScale; // 화면에서 최소 약 40px 크기의 터치 영역 확보
 
-    for (let reg of regions) {
-        if (Math.abs(mouseX - reg.x) <= reg.w/2 && Math.abs(mouseY - reg.y) <= reg.h/2) {
-            revealedLabels[reg.name] = true;
-            selectedRegion = reg; // 눌린 개념을 고정
-            infoTitle.textContent = `📍 [${reg.name}]`;
-            infoDesc.textContent = reg.desc;
-            drawOverlay();
-            break;
+    let best = null;
+    let bestDist = Infinity;
+    for (const reg of regions) {
+        const r = hitRects[reg.name];
+        if (!r) continue;
+        const hw = Math.max(r.w, minTouch) / 2;
+        const hh = Math.max(r.h, minTouch) / 2;
+        const dx = Math.abs(mouseX - r.x);
+        const dy = Math.abs(mouseY - r.y);
+        if (dx <= hw && dy <= hh) {
+            const d = dx * dx + dy * dy;
+            if (d < bestDist) { best = reg; bestDist = d; }
         }
+    }
+
+    if (best) {
+        revealedLabels[best.name] = true;
+        selectedRegion = best; // 눌린 개념을 고정
+        infoTitle.textContent = `📍 [${best.name}]`;
+        infoDesc.textContent = best.desc;
+        drawOverlay();
     }
 });
 
@@ -729,7 +882,7 @@ class Particle {
     }
 
     draw() {
-        drawShape(ctx, this.type, this.x, this.y, this.radius, this.color);
+        drawShape(ctx, this.type, this.x, this.y, this.radius * pm, this.color);
     }
 }
 
@@ -749,7 +902,7 @@ function initParticles() {
     particleConfigs.forEach(cfg => { spawnCounters[cfg.type] = 0; });
 }
 
-// 오버레이 그리기 (과정 항목 초록색 물음표 상자 복구 반영)
+// 오버레이 그리기 (과정 항목 초록색 물음표 상자 포함)
 function drawOverlay() {
     overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
@@ -758,6 +911,9 @@ function drawOverlay() {
     overlayCtx.scale(scaleRatio, scaleRatio);
     overlayCtx.textAlign = 'center';
 
+    // 작은 화면에서는 글자·상자를 키워 화면에서 최소 약 11px 이상으로 보이게 함
+    const k = Math.min(1.8, Math.max(1, 11 / (18 * cssScale)));
+
     regions.forEach(l => {
         const isRevealed = revealedLabels[l.name];
         const isSelected = selectedRegion && selectedRegion.name === l.name;
@@ -765,9 +921,11 @@ function drawOverlay() {
 
         const displayText = isRevealed ? l.name : '?';
 
-        overlayCtx.font = isRevealed ? '18px "Jua", sans-serif' : 'bold 20px "Jua", sans-serif';
+        overlayCtx.font = isRevealed ? `${18 * k}px "Jua", sans-serif` : `bold ${20 * k}px "Jua", sans-serif`;
         const textWidth = overlayCtx.measureText(displayText).width;
-        const w = Math.max(textWidth + 18, 42);
+        const w = Math.max(textWidth + 18 * k, 42 * k);
+        const h = 26 * k;
+        const top = l.y - 16 * k;
 
         if (isRevealed) {
             if (isProcess) {
@@ -790,15 +948,17 @@ function drawOverlay() {
             overlayCtx.lineWidth = 2;
         }
 
-        overlayCtx.fillRect(l.x - w/2, l.y - 16, w, 26);
-        overlayCtx.strokeRect(l.x - w/2, l.y - 16, w, 26);
+        overlayCtx.fillRect(l.x - w / 2, top, w, h);
+        overlayCtx.strokeRect(l.x - w / 2, top, w, h);
 
         if (isRevealed) {
             overlayCtx.fillStyle = isProcess ? (isSelected ? '#15803d' : '#166534') : (isSelected ? '#1d4ed8' : '#1e293b');
         } else {
             overlayCtx.fillStyle = isProcess ? '#166534' : '#854d0e';
         }
-        overlayCtx.fillText(displayText, l.x, l.y + 4);
+        overlayCtx.fillText(displayText, l.x, l.y + 4 * k);
+
+        hitRects[l.name] = { x: l.x, y: top + h / 2, w: w, h: h };
     });
 
     overlayCtx.restore();
@@ -853,32 +1013,30 @@ function getConfigId(type) {
 const quizData = [
     {
         q: "1. 여과로 토리에서 보먼주머니로 이동하는 물질을 모두 고르시오.",
-        options: ["포도당", "단백질", "물", "적혈구", "아미노산", "요소", "무기염류"],
-        answers: ["포도당", "물", "아미노산", "요소", "무기염류"]
+        options: ["적혈구", "단백질", "포도당/아미노산", "물/무기염류", "요소/노폐물"],
+        answers: ["포도당/아미노산", "물/무기염류", "요소/노폐물"]
     },
     {
-        q: "2. 여과되는 물질과 여과되지 않는 물질의 차이로 옳은 것을 모두 고르시오.",
+        q: "2. 여과되는 물질과 여과되지 않는 물질의 차이는 무엇인가?",
         options: [
-            "여과되는 물질은 여과되지 않는 물질보다 크기가 작다.",
             "물질의 모양에 따라 여과 여부가 결정된다.",
-            "적혈구와 단백질은 크기가 커서 여과되지 않는다.",
+            "적혈구와 단백질은 다른 물질보다 크기가 커서 여과되지 않는다.",
             "노폐물은 여과되고 영양소는 여과되지 않는다.",
             "크기가 큰 물질일수록 여과가 잘 된다."
         ],
         answers: [
-            "여과되는 물질은 여과되지 않는 물질보다 크기가 작다.",
-            "적혈구와 단백질은 크기가 커서 여과되지 않는다."
+            "적혈구와 단백질은 다른 물질보다 크기가 커서 여과되지 않는다."
         ]
     },
     {
         q: "3. 재흡수로 세뇨관에서 모세혈관으로 이동하는 물질을 모두 고르시오.",
-        options: ["아미노산", "요소", "포도당", "단백질", "물", "무기염류"],
-        answers: ["아미노산", "포도당", "물", "무기염류"]
+        options: ["적혈구", "단백질", "포도당/아미노산", "물/무기염류", "요소/노폐물"],
+        answers: ["포도당/아미노산", "물/무기염류"]
     },
     {
-        q: "4. 분비로 모세혈관에서 세뇨관으로 이동하는 물질을 모두 고르시오.",
-        options: ["포도당", "요소", "물", "적혈구", "아미노산"],
-        answers: ["요소"]
+        q: "4. 여과되지 않고 혈액에 남아 있던 노폐물(요소)이 혈액에서 세뇨관으로 이동하는 과정의 이름은 무엇인가?",
+        options: ["여과", "분비", "재흡수"],
+        answers: ["분비"]
     }
 ];
 
@@ -888,28 +1046,84 @@ const quizQuestionText = document.getElementById('quizQuestionText');
 const quizOptions = document.getElementById('quizOptions');
 const quizSubmitBtn = document.getElementById('quizSubmitBtn');
 const quizFeedback = document.getElementById('quizFeedback');
-const quizProgressText = document.getElementById('quizProgressText');
+const quizDots = document.getElementById('quizDots');
+const quizScore = document.getElementById('quizScore');
+const quizScoreText = document.getElementById('quizScoreText');
+
+// 문항별 풀이 기록 (문항을 넘겨도 선택한 답과 결과가 남음)
+// selected: 고른 보기 / result: 현재 답의 채점 결과(true·false·null=제출 전) / firstTry: 처음 제출했을 때의 결과
+let quizState = quizData.map(() => ({ selected: [], result: null, firstTry: null }));
+
+const FEEDBACK_OK = "<span style='color:#16a34a; display:flex; align-items:center; gap:6px;'><span style='font-size:24px;'>⭕</span> 정답입니다! 아주 잘했어요!</span>";
+const FEEDBACK_NO = "<span style='color:#dc2626; display:flex; align-items:center; gap:6px;'><span style='font-size:24px;'>❌</span> 다시 풀어보세요!</span>";
+
+function renderDots() {
+    quizDots.innerHTML = "";
+    quizState.forEach((st, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-dot';
+        if (st.result === true) btn.classList.add('correct');
+        if (st.result === false) btn.classList.add('wrong');
+        if (i === currentQuizIndex) btn.classList.add('current');
+        btn.textContent = st.result === true ? '⭕' : st.result === false ? '❌' : String(i + 1);
+        btn.setAttribute('aria-label', `${i + 1}번 문제`);
+        btn.addEventListener('click', () => loadQuiz(i));
+        quizDots.appendChild(btn);
+    });
+}
+
+// 모든 문항을 한 번씩 제출하면 결과 표시 (처음 제출한 답 기준)
+function updateScore() {
+    const done = quizState.every(st => st.firstTry !== null);
+    if (!done) {
+        quizScore.classList.remove('show');
+        return;
+    }
+    const correct = quizState.filter(st => st.firstTry).length;
+    const emoji = correct === quizState.length ? '🎉' : correct >= quizState.length / 2 ? '👍' : '💪';
+    quizScoreText.textContent = `${emoji} ${quizState.length}문제 중 ${correct}문제를 한 번에 맞혔어요!`;
+    const wasHidden = !quizScore.classList.contains('show');
+    quizScore.classList.add('show');
+    if (wasHidden) quizScore.scrollIntoView({ block: 'nearest' });
+}
 
 function loadQuiz(index) {
     currentQuizIndex = index;
+    const st = quizState[index];
     quizQuestionText.textContent = quizData[index].q;
     quizOptions.innerHTML = "";
+    // 정답이 1개인 문항은 하나만 고르는 라디오 버튼, 2개 이상이면 체크박스
+    const isSingle = quizData[index].answers.length === 1;
     quizData[index].options.forEach(text => {
         const label = document.createElement('label');
         label.className = 'quiz-option';
         const cb = document.createElement('input');
-        cb.type = 'checkbox';
+        cb.type = isSingle ? 'radio' : 'checkbox';
+        cb.name = 'quizOpt';
         cb.value = text;
+        cb.checked = st.selected.includes(text); // 이전에 고른 답 복원
+        label.classList.toggle('checked', cb.checked);
         cb.addEventListener('change', () => {
-            label.classList.toggle('checked', cb.checked);
+            quizOptions.querySelectorAll('.quiz-option').forEach(l =>
+                l.classList.toggle('checked', l.querySelector('input').checked));
+            st.selected = Array.from(quizOptions.querySelectorAll('input:checked')).map(i => i.value);
+            st.result = null;           // 답을 바꾸면 다시 '답 확인'을 눌러야 함
             quizFeedback.innerHTML = "";
+            renderDots();
         });
         label.appendChild(cb);
         label.appendChild(document.createTextNode(text));
         quizOptions.appendChild(label);
     });
-    quizFeedback.innerHTML = "";
-    quizProgressText.textContent = `${index + 1} / ${quizData.length}`;
+    quizFeedback.innerHTML = st.result === true ? FEEDBACK_OK : st.result === false ? FEEDBACK_NO : "";
+    renderDots();
+    updateScore();
+}
+
+function resetQuiz() {
+    quizState = quizData.map(() => ({ selected: [], result: null, firstTry: null }));
+    currentQuizIndex = 0;
+    if (quizModal.classList.contains('active')) loadQuiz(0);
 }
 
 document.getElementById('btnQuizModalOpen').addEventListener('click', () => {
@@ -933,6 +1147,8 @@ document.getElementById('quizNextBtn').addEventListener('click', () => {
     }
 });
 
+document.getElementById('quizRetryBtn').addEventListener('click', resetQuiz);
+
 // 답 확인 및 채점 로직 (선택한 보기 = 정답 보기 일 때만 정답)
 quizSubmitBtn.addEventListener('click', () => {
     const selected = Array.from(quizOptions.querySelectorAll('input:checked')).map(cb => cb.value);
@@ -944,11 +1160,14 @@ quizSubmitBtn.addEventListener('click', () => {
     const answers = quizData[currentQuizIndex].answers;
     const isCorrect = selected.length === answers.length && answers.every(a => selected.includes(a));
 
-    if (isCorrect) {
-        quizFeedback.innerHTML = "<span style='color:#16a34a; display:flex; align-items:center; gap:6px;'><span style='font-size:24px;'>⭕</span> 정답입니다! 아주 잘했어요!</span>";
-    } else {
-        quizFeedback.innerHTML = "<span style='color:#dc2626; display:flex; align-items:center; gap:6px;'><span style='font-size:24px;'>❌</span> 다시 풀어보세요!</span>";
-    }
+    const st = quizState[currentQuizIndex];
+    st.selected = selected;
+    st.result = isCorrect;
+    if (st.firstTry === null) st.firstTry = isCorrect;
+
+    quizFeedback.innerHTML = isCorrect ? FEEDBACK_OK : FEEDBACK_NO;
+    renderDots();
+    updateScore();
 });
 
 // 물질 토글 버튼 이벤트
@@ -992,14 +1211,16 @@ document.getElementById('btnReset').addEventListener('click', () => {
     Object.keys(revealedLabels).forEach(k => revealedLabels[k] = false);
     selectedRegion = null;
     infoTitle.textContent = "📍 [ 콩팥의 구조와 물질 이동 시뮬레이션 ]";
-    infoDesc.textContent = "화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 뜬 상태로 유지됩니다.";
+    infoDesc.textContent = "화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 나타납니다.";
     quizModal.classList.remove('active');
+    resetQuiz();
     drawOverlay();
 });
 
 // 실행
 initButtonIcons();
 initParticles();
+resizeCanvases();
 animate();
 </script>
 
