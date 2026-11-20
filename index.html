@@ -583,6 +583,51 @@
 const BASE_WIDTH = 830;
 const BASE_HEIGHT = 360;
 
+// ===== 효과음 (파일 없이 브라우저가 직접 소리를 만듦) =====
+let audioCtx = null;
+
+// freq: 시작 음높이(Hz), freqEnd: 끝 음높이(없으면 일정), duration: 길이(초), delay: 시작 지연(초)
+function playTone(freq, duration, delay = 0, type = 'sine', volume = 0.12, freqEnd = null) {
+    try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume(); // 아이패드 Safari 대응
+        const t = audioCtx.currentTime + delay;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, t);
+        if (freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, t + duration);
+        gain.gain.setValueAtTime(volume, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + duration); // 소리가 부드럽게 줄어듦
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + duration + 0.02);
+    } catch (e) { /* 소리를 못 내는 환경에서도 화면은 정상 작동 */ }
+}
+
+const sfx = {
+    // 딸깍: 아주 짧게 높은 음에서 낮은 음으로
+    click: () => playTone(1500, 0.05, 0, 'square', 0.05, 700),
+    // 정답: 도-미-솔-높은 도 (밝은 소리)
+    correct: () => {
+        [523, 659, 784, 1047].forEach((f, i) => playTone(f, i === 3 ? 0.35 : 0.14, i * 0.09, 'triangle', 0.14));
+    },
+    // 오답: 낮고 짧은 '삐' 소리
+    wrong: () => playTone(330, 0.32, 0, 'square', 0.07)
+};
+
+// 모든 버튼(시뮬레이터·퀴즈의 이전/다음/번호/닫기 등)을 누르면 딸깍. 단, '답 확인'은 정답·오답 소리가 대신 남
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn || btn.id === 'quizSubmitBtn') return;
+    sfx.click();
+});
+// 퀴즈 보기를 고를 때 딸깍
+document.addEventListener('change', (e) => {
+    if (e.target.matches('.quiz-option input')) sfx.click();
+});
+
 const bgCanvas = document.getElementById('bgCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const canvas = document.getElementById('particleCanvas');
@@ -809,6 +854,7 @@ canvasContainer.addEventListener('click', (e) => {
     }
 
     if (best) {
+        sfx.click();
         revealedLabels[best.name] = true;
         selectedRegion = best; // 눌린 개념을 고정
         infoTitle.textContent = `📍 [${best.name}]`;
@@ -1166,6 +1212,7 @@ quizSubmitBtn.addEventListener('click', () => {
     if (st.firstTry === null) st.firstTry = isCorrect;
 
     quizFeedback.innerHTML = isCorrect ? FEEDBACK_OK : FEEDBACK_NO;
+    if (isCorrect) sfx.correct(); else sfx.wrong();
     renderDots();
     updateScore();
 });
@@ -1211,7 +1258,7 @@ document.getElementById('btnReset').addEventListener('click', () => {
     Object.keys(revealedLabels).forEach(k => revealedLabels[k] = false);
     selectedRegion = null;
     infoTitle.textContent = "📍 [ 콩팥의 구조와 물질 이동 시뮬레이션 ]";
-    infoDesc.textContent = "화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 나타납니다.";
+    infoDesc.textContent = "화면의 물음표(?) 상자를 터치하면 해당 부위의 명칭과 설명이 뜬 상태로 유지됩니다.";
     quizModal.classList.remove('active');
     resetQuiz();
     drawOverlay();
